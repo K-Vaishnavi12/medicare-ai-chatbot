@@ -309,20 +309,22 @@ function passageAnswer(question) {
   let best = null;
   let bestScore = 0;
   for (const passage of SITE_PASSAGES) {
-    const haystack = normalize(`${passage.title} ${passage.text}`);
+    const words = tokens(`${passage.title} ${passage.text}`);
+    const wordSet = new Set(words);
     let score = 0;
     for (const word of queryTokens) {
-      if (haystack.includes(word)) score += word.length > 6 ? 3 : 1;
+      if (wordSet.has(word)) score += word.length > 6 ? 3 : 2;
+      else if (word.length >= 5 && words.some((item) => item.startsWith(word))) score += 1;
     }
-    const titleHit = tokens(passage.title).some((word) => queryTokens.includes(word));
-    if (titleHit) score += 3;
+    const titleWords = new Set(tokens(passage.title));
+    score += queryTokens.filter((word) => titleWords.has(word)).length * 4;
     if (score > bestScore) {
       bestScore = score;
       best = passage;
     }
   }
 
-  if (!best || bestScore < 3) return null;
+  if (!best || bestScore < 4) return null;
   return `${best.text}\n\nSource: ${best.title}\n${best.url}`;
 }
 
