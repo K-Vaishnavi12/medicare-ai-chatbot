@@ -24,3 +24,9 @@ npx serve .
 Anyone with this URL can open the chatbot (no login required):
 
 https://k-vaishnavi12.github.io/medicare-ai-chatbot/
+
+Paste that URL into a knowledge-base website crawler. The sitemap is:
+
+https://k-vaishnavi12.github.io/medicare-ai-chatbot/sitemap.xml
+
+Every section is also written out as normal HTML so a crawler can read it: About, Services, Doctors, Guidance, Prescriptions, FAQ, and the full explanation at `website-details.html`.

@@ -336,3 +336,82 @@ h1 {
   .top-actions { justify-content: space-between; }
   .composer button span { display: none; }
 }
+
+.page-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page-links a {
+  text-decoration: none;
+  color: var(--teal-dark);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.86rem;
+}
+
+.page-links a:hover { background: var(--teal-soft); }
+
+.crawl-map {
+  margin: 0 20px 20px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px 20px;
+}
+
+.crawl-map h2 {
+  margin: 0 0 8px;
+  font-family: Fraunces, Georgia, serif;
+  font-size: 1.35rem;
+}
+
+.crawl-map p, .crawl-map li { color: var(--muted); line-height: 1.5; }
+.crawl-map a { color: var(--teal-dark); }
+
+.site { max-width: 860px; margin: 0 auto; padding: 20px; }
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+.site-header .brand { text-decoration: none; color: #134e58; }
+.site-nav { display: flex; flex-wrap: wrap; gap: 8px 12px; }
+.site-nav a { color: var(--teal-dark); text-decoration: none; font-size: 0.92rem; }
+.site-nav a[aria-current="page"] { font-weight: 700; }
+.article {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 28px 26px 32px;
+  box-shadow: var(--shadow);
+}
+.article h1 { margin-bottom: 8px; }
+.article h2 { font-family: Fraunces, Georgia, serif; font-size: 1.35rem; margin: 1.4rem 0 0.4rem; }
+.article p, .article li { color: var(--muted); line-height: 1.6; }
+.article a { color: var(--teal-dark); }
+.note {
+  background: #f8f5ff;
+  border: 1px solid #e8e0ff;
+  border-radius: 14px;
+  padding: 12px 14px;
+  color: var(--soft);
+}
+.site-footer { color: var(--soft); font-size: 0.85rem; margin-top: 16px; }
+.doc-card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  background: #f8fcff;
+}
+.doc-card dt { font-weight: 700; color: var(--ink); margin-top: 8px; }
+.doc-card dd { margin: 2px 0 0; color: var(--muted); }

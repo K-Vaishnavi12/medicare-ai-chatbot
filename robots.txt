@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://k-vaishnavi12.github.io/medicare-ai-chatbot/sitemap.xml

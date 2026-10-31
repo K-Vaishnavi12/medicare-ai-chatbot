@@ -19,11 +19,11 @@ const ui = {
     bot: "MediCare AI",
     welcome: "Hello! I’m the MediCare AI assistant.\n\nI can help you explore this healthcare platform concept: finding sample specialists, understanding appointments and digital prescriptions, and answering general care-navigation questions.\n\nI do not diagnose illnesses, issue prescriptions, or replace a doctor. For emergencies, contact local emergency services.",
     suggestions: [
-      "What is MediCare AI?",
-      "How do I choose a specialist?",
-      "Show sample doctors",
-      "How do digital prescriptions work?",
-      "What should I ask about a medicine?",
+      "Explain the About page",
+      "What is on the Services page?",
+      "Who is Dr. Sahana Iyer?",
+      "Explain the sample prescription",
+      "What does the home page say?",
       "When should I seek urgent help?"
     ]
   },
@@ -219,7 +219,7 @@ const knowledge = {
 };
 
 const fallback = {
-  en: "I can answer questions about MediCare AI’s purpose, users, AI features, sample doctors, appointments, digital prescriptions, privacy, multilingual support, and general care-navigation topics.\n\nTry: “What is MediCare AI?”, “Show sample doctors”, or “How do digital prescriptions work?”\n\nI cannot diagnose conditions or provide personal medical treatment advice.",
+  en: "I can explain any section of this MediCare AI website: Home, About, Services, Doctors, Guidance, Prescriptions, FAQ, and the full website-details page.\n\nTry: “Explain the About page”, “Who is Dr. Vikram Mehta?”, or “What is on the sample prescription?”\n\nI share website information only. I cannot diagnose conditions or provide personal medical treatment advice.",
   hi: "मैं MediCare AI के उद्देश्य, उपयोगकर्ताओं, AI सुविधाओं, नमूना डॉक्टरों, अपॉइंटमेंट, डिजिटल प्रिस्क्रिप्शन, गोपनीयता और सामान्य स्वास्थ्य मार्गदर्शन पर उत्तर दे सकता/सकती हूँ।\n\nउदाहरण: “MediCare AI क्या है?” या “नमूना डॉक्टर दिखाएँ”।\n\nमैं निदान या व्यक्तिगत उपचार सलाह नहीं देता/देती।",
   te: "నేను MediCare AI ఉద్దేశ్యం, వినియోగదారులు, AI ఫీచర్లు, నమూనా డాక్టర్లు, అపాయింట్‌మెంట్లు, డిజిటల్ ప్రిస్క్రిప్షన్లు, గోప్యత మరియు సాధారణ ఆరోగ్య మార్గదర్శకత్వం గురించి సమాధానం ఇవ్వగలను.\n\nఉదా: “MediCare AI అంటే ఏమిటి?” లేదా “నమూనా డాక్టర్లు చూపించు”.\n\nనేను రోగ నిర్ధారణ లేదా వ్యక్తిగత చికిత్స సలహా ఇవ్వను."
 };
@@ -295,6 +295,37 @@ function normalize(text) {
   return text.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ").trim();
 }
 
+const STOP_WORDS = new Set(["the", "a", "an", "and", "or", "to", "of", "for", "in", "on", "is", "are", "do", "does", "i", "you", "me", "my", "with", "this", "that", "it", "be", "from", "please"]);
+
+function tokens(text) {
+  return normalize(text).split(" ").filter((word) => word.length > 2 && !STOP_WORDS.has(word));
+}
+
+function passageAnswer(question) {
+  if (typeof SITE_PASSAGES === "undefined") return null;
+  const queryTokens = [...new Set(tokens(question))];
+  if (!queryTokens.length) return null;
+
+  let best = null;
+  let bestScore = 0;
+  for (const passage of SITE_PASSAGES) {
+    const haystack = normalize(`${passage.title} ${passage.text}`);
+    let score = 0;
+    for (const word of queryTokens) {
+      if (haystack.includes(word)) score += word.length > 6 ? 3 : 1;
+    }
+    const titleHit = tokens(passage.title).some((word) => queryTokens.includes(word));
+    if (titleHit) score += 3;
+    if (score > bestScore) {
+      bestScore = score;
+      best = passage;
+    }
+  }
+
+  if (!best || bestScore < 3) return null;
+  return `${best.text}\n\nSource: ${best.title}\n${best.url}`;
+}
+
 function answerFor(question) {
   const q = normalize(question);
   if (emergencyKeys.some((k) => q.includes(k.toLowerCase()))) {
@@ -320,7 +351,10 @@ function answerFor(question) {
     }
   }
 
+  const fromSite = passageAnswer(question);
+  if (fromSite && (lang === "en" || bestScore < 4)) return fromSite;
   if (best && bestScore > 0) return best.answer;
+  if (fromSite) return fromSite;
   return fallback[lang];
 }
 
