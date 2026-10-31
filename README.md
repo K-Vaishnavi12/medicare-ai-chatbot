@@ -21,4 +21,6 @@ npx serve .
 
 ## Public link
 
-Published with GitHub Pages so anyone with the URL can use it.
+Anyone with this URL can open the chatbot (no login required):
+
+https://k-vaishnavi12.github.io/medicare-ai-chatbot/
